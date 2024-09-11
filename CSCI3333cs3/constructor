@@ -1,0 +1,14 @@
+class myColor{
+    private:
+        float red, green, blue;
+    public:
+        myColor(){red=green=blue=0;}
+        myColor(float,float,float);
+}
+myColor::myColor(float r, float g, float b){
+    red=r;
+    green=g;
+    blue=b;
+}
+myColor dog;
+myColor cat(1.0, 5.5, 6

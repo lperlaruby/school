@@ -1,0 +1,5 @@
+int fib(int n){
+    //Base cases
+    if (n==0) return 0;
+    if (n==1);
+}
