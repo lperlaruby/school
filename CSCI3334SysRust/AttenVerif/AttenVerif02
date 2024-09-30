@@ -1,0 +1,68 @@
+use std::fs::OpenOptions;
+use std::io::{self, Write, BufRead, BufReader};
+
+#[derive(Debug)]
+struct Car {
+    make: String,
+    model: String,
+    year: u32,
+}
+
+fn main() {
+    // Ask user for car details
+    println!("Enter car make:");
+    let make = read_input();
+    
+    println!("Enter car model:");
+    let model = read_input();
+    
+    println!("Enter car year:");
+    let year: u32 = read_input().trim().parse().expect("Please enter a valid number for the year");
+
+    // Create the car struct
+    let car = Car {
+        make,
+        model,
+        year,
+    };
+
+    // Save car struct to user_info.txt
+    save_to_file(&car);
+
+    // Read from user_info.txt and display contents
+    read_and_print_file();
+}
+
+fn read_input() -> String {
+    let mut input = String::new();
+    io::stdin().read_line(&mut input).expect("Failed to read input");
+    input.trim().to_string()
+}
+
+fn save_to_file(car: &Car) {
+    let file = OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("user_info.txt")
+        .expect("Unable to open file");
+    
+    let car_data = format!("Make: {}, Model: {}, Year: {}\n", car.make, car.model, car.year);
+
+    let mut writer = io::BufWriter::new(file);
+    writer.write_all(car_data.as_bytes()).expect("Unable to write to file");
+    println!("Car info saved to user_info.txt!");
+}
+
+fn read_and_print_file() {
+    let file = OpenOptions::new()
+        .read(true)
+        .open("user_info.txt")
+        .expect("Unable to open file");
+
+    let reader = BufReader::new(file);
+
+    println!("Contents of user_info.txt:");
+    for line in reader.lines() {
+        println!("{}", line.expect("Error reading line"));
+    }
+}
