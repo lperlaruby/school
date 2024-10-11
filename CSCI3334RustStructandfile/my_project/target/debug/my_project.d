@@ -1,0 +1,1 @@
+C:\Users\lperl\OneDrive\Desktop\schoolfall2024\CSCI3334RustStructandfile\my_project\target\debug\my_project.exe: C:\Users\lperl\OneDrive\Desktop\schoolfall2024\CSCI3334RustStructandfile\my_project\src\main.rs
