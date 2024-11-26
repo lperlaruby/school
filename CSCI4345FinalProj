@@ -1,0 +1,61 @@
+import numpy as np
+from multiprocessing import Pool
+import time #import the time
+import logging
+import matplotlib
+matplotlib.use('Agg') #for it to be non-interactive backend
+import matplotlib.pyplot as plt
+
+#to configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(message)s")
+
+def worker_task(data_chunk):
+    """Simulates a worker node processing a chunk of data."""
+    logging.info(f"Processing chunk of size {len(data_chunk)}")
+    return sum(data_chunk)
+
+def sequential_sum(data):
+    """Computes the sum of the data sequentially."""
+    return sum(data)
+
+def visualize_chunk_sizes(data_chunks):
+    chunk_sizes = [len(chunk) for chunk in data_chunks]
+    plt.bar(range(len(chunk_sizes)), chunk_sizes)
+    plt.xlabel("Worker")
+    plt.ylabel("Chunk Size")
+    plt.title("Data Distribution Among Workers")
+    #to save the plot to a file
+    plt.savefig("chunk_sizes.png")
+    print("Plot saved as chunk_sizes.png")
+
+def main():
+    #to generate a large dataset (1 million integers)
+    data = np.random.randint(0, 100, size=10**6)
+    #to divide data into chunks (4 chunks for 4 workers)
+    num_workers = 4
+    data_chunks = np.array_split(data, num_workers)
+
+    #to visualize chunk sizes
+    visualize_chunk_sizes(data_chunks)
+
+    #sequential computation
+    start_time = time.time()
+    single_thread_sum = sequential_sum(data)
+    single_thread_time = time.time() - start_time
+
+    #to distribute tasks using multiprocessing Pool and parallel computation
+    start_time = time.time()
+    with Pool(num_workers) as pool:
+        results = pool.map(worker_task, data_chunks)
+    #to aggregate results from all workers
+    total_sum = sum(results)
+
+    #time thread
+    multi_thread_time = time.time() - start_time
+
+    #print results and execution time
+    print(f"Sequential Sum: {single_thread_sum}, Time: {single_thread_time:.4f} seconds")
+    print(f"Parallel Sum: {total_sum}, Time: {multi_thread_time:.4f} seconds")
+
+if __name__ == "__main__":
+    main()
